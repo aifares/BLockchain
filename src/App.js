@@ -16,7 +16,7 @@ function App() {
       <div>RESTURANT RESERVATION SYSTEM</div>
       <div>
         {" "}
-        <Button variant="contained">Contained</Button>
+  
       </div>
       <WalletCard/>
 

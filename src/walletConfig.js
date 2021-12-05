@@ -10,11 +10,7 @@ const SimpleStorage = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [defaultAccount, setDefaultAccount] = useState(null);
   const [connButtonText, setConnButtonText] = useState("Connect Wallet");
-  const [userBalance, setUserBalance] = useState(null);
   const [billTotal, setBIllTotal] = useState(null);
-
-  const [currentContractVal, setCurrentContractVal] = useState(null);
-
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
   const [contract, setContract] = useState(null);
@@ -36,18 +32,15 @@ const SimpleStorage = () => {
     }
   };
 
-  // update account, will cause component re-render
   const accountChangedHandler = (newAccount) => {
     setDefaultAccount(newAccount);
     updateEthers();
   };
 
   const chainChangedHandler = () => {
-    // reload the page to avoid any errors with chain change mid use of application
     window.location.reload();
   };
 
-  // listen for account changes
   window.ethereum.on("accountsChanged", accountChangedHandler);
 
   window.ethereum.on("chainChanged", chainChangedHandler);
@@ -80,10 +73,9 @@ const SimpleStorage = () => {
     contract.Checkin();
   };
 
-
   const pay = (event) => {
     event.preventDefault();
-    contract.paid("0xe0119d0B935236593b54055b2c0F49D4C67215b5");
+    contract.transfer("0xe0119d0B935236593b54055b2c0F49D4C67215b5",1);
   };
 
   const addToBill = (event) => {
@@ -92,7 +84,7 @@ const SimpleStorage = () => {
   };
 
   const seeBill = async () => {
-      console.log("SeeBill")
+    console.log("SeeBill");
     let val = await contract.SeeMyBill();
     let decimal = parseInt(val, 16);
     setBIllTotal(decimal);
@@ -113,6 +105,7 @@ const SimpleStorage = () => {
           placeholder="Party Size"
         />
         <TextField
+          id="setTime"
           variant="outlined"
           type="text"
           placeholder="Reservavtion Time"
@@ -136,7 +129,7 @@ const SimpleStorage = () => {
           </Button>
         </div>
       </form>
-      
+
       <div>
         <Button onClick={setCheckIn} variant="contained">
           Check In
@@ -148,6 +141,12 @@ const SimpleStorage = () => {
           See My Bill
         </Button>
       </div>
+      <div>
+        <Button onClick={pay} variant="contained">
+          Pay Bill
+        </Button>
+      </div>
+
       {errorMessage}
       {billTotal}
     </div>

@@ -3,9 +3,10 @@ import { ethers } from "ethers";
 import ABIFILE from "./ABIFILE.json";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+
 const SimpleStorage = () => {
   // deploy simple storage contract and paste deployed contract address here. This value is local ganache chain
-  let contractAddress = "0x2811d139974AB83f53125aAdC395b6102689792b";
+  let contractAddress = "0x9188a3075a4120d2b2B62C499427aa8EcA538540";
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [defaultAccount, setDefaultAccount] = useState(null);
@@ -62,6 +63,7 @@ const SimpleStorage = () => {
 
   const setReservation = (event) => {
     event.preventDefault();
+    console.log(defaultAccount);
     contract.reserve(
       event.target.setPartySize.value,
       event.target.setTime.value
@@ -69,18 +71,28 @@ const SimpleStorage = () => {
   };
 
   const setCheckIn = (event) => {
-    event.preventDefault();
+    try {
+      event.preventDefault();
+      contract.Checkin();
+    } catch (err) {
+      console.log(err);
+    }
     contract.Checkin();
   };
 
   const pay = (event) => {
     event.preventDefault();
-    contract.transfer("0xe0119d0B935236593b54055b2c0F49D4C67215b5",1);
+    contract.transfer("0xe0119d0B935236593b54055b2c0F49D4C67215b5", 1);
   };
 
   const addToBill = (event) => {
-    event.preventDefault();
-    contract.addToBill(event.target.amount.value);
+    try {
+      event.preventDefault();
+      event.preventDefault();
+      contract.addToBill(event.target.amount.value);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const seeBill = async () => {
@@ -88,6 +100,11 @@ const SimpleStorage = () => {
     let val = await contract.SeeMyBill();
     let decimal = parseInt(val, 16);
     setBIllTotal(decimal);
+  };
+
+  const done = async (event) => {
+    event.preventDefault();
+    contract.done();
   };
 
   return (
@@ -122,12 +139,11 @@ const SimpleStorage = () => {
           type="text"
           placeholder="Amount To Add"
         />
-        <div>
-          <Button variant="contained" type={"submit"}>
-            {" "}
-            Add To Bill{" "}
-          </Button>
-        </div>
+
+        <Button variant="contained" type={"submit"}>
+          {" "}
+          Add To Bill{" "}
+        </Button>
       </form>
 
       <div>
@@ -144,6 +160,11 @@ const SimpleStorage = () => {
       <div>
         <Button onClick={pay} variant="contained">
           Pay Bill
+        </Button>
+      </div>
+      <div>
+        <Button onClick={done} variant="contained">
+          Close Tab
         </Button>
       </div>
 
